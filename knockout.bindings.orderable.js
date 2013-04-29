@@ -28,6 +28,7 @@
         //get provided options
         var collection = valueAccessor().collection;
         var field = valueAccessor().field;
+        var updating = false;
 
         //add a few observables to ViewModel to track order field and direction
         if (viewModel[collection].orderField == undefined) {
@@ -67,6 +68,13 @@
         });
         viewModel[collection].orderDirection.subscribe(function () {
             ko.bindingHandlers.orderable.sort(viewModel, collection, field);
+        });
+        viewModel[collection].subscribe(function () {
+            if (updating)
+                return;
+            updating = true;
+            ko.bindingHandlers.orderable.sort(viewModel, collection, field);
+            updating = false;
         });
     },
 
